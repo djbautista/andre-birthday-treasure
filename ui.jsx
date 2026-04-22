@@ -154,6 +154,45 @@ const PhotoPlaceholder = ({ stop, blur = 0, sharpness = 0 }) => {
   };
   const theme = themes[stop.id];
   const filter = `blur(${blur}px) saturate(${0.7 + sharpness * 0.3}) contrast(${0.95 + sharpness * 0.05})`;
+  // Scrapbook collage when multiple photos are provided for a stop
+  if (stop.photos && stop.photos.length >= 2) {
+    const imgFilter = `blur(${blur}px) saturate(${0.85 + sharpness * 0.15}) contrast(${0.95 + sharpness * 0.05})`;
+    const ease = 'cubic-bezier(0.19, 1, 0.22, 1)';
+    const tile = (src, placement) => (
+      <div style={{
+        position: 'absolute',
+        ...placement.pos,
+        width: '64%',
+        height: '64%',
+        background: '#fffdf9',
+        padding: '6px 6px 22px',
+        boxShadow: '0 2px 4px rgba(58,46,46,0.08), 0 10px 22px rgba(176,107,114,0.18)',
+        borderRadius: 2,
+        transform: `rotate(${placement.rot}deg) scale(${1 + blur * 0.01})`,
+        transformOrigin: 'center center',
+        transition: `transform 1.2s ${ease}`,
+      }}>
+        <div style={{position:'absolute', inset:'6px 6px 22px', overflow:'hidden', background:'#f0ddd4'}}>
+          <img src={src} alt="" style={{
+            width:'100%', height:'100%', objectFit:'cover',
+            filter: imgFilter,
+            transition: `filter 1.2s ${ease}`,
+          }}/>
+        </div>
+      </div>
+    );
+    return (
+      <div style={{position:'absolute', inset:0, overflow:'hidden', background:'#efe0d7'}}>
+        {tile(stop.photos[0], { pos: { top: '4%',    left: '2%'  }, rot: -5 })}
+        {tile(stop.photos[1], { pos: { bottom: '4%', right: '2%' }, rot:  6 })}
+        <div style={{
+          position:'absolute', inset:0,
+          background:'linear-gradient(180deg, rgba(255,240,230,0.08), rgba(176,107,114,0.10))',
+          mixBlendMode:'soft-light', pointerEvents:'none',
+        }}/>
+      </div>
+    );
+  }
   // Real photo path wins over stylized placeholder when provided
   if (stop.photo) {
     return (

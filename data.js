@@ -44,6 +44,7 @@ window.STOPS = [
     emoji: "🏀",
     placeholderLabel: "Zajari",
     placeholderHue: "#C8A2C8",
+    photos: ["assets/stop3-zajari-a.jpg", "assets/stop3-zajari-b.jpg"],
     intro: "Hay lugares que no solo se habitan: se convierten en ensayo, refugio, risa y hogar.",
     hints: [
       "Aquí vivimos una etapa que nos enseñó cómo se siente construir algo juntos por primera vez.",
