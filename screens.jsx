@@ -284,37 +284,89 @@ function StopScreen({ stop, stopIndex, onComplete }) {
         <ProgressTrail current={stopIndex} total={4} />
       </div>
 
-      {/* polaroid blur photo */}
-      <div style={{
-        position:'relative', margin:'22px auto 0', width: 240,
-        transform: 'rotate(-1.5deg)',
-      }}>
-        <div className="polaroid">
-          <div className="tape tape-top-left" />
-          <div className="memory-photo" style={{aspectRatio:'4/5'}}>
-            <PhotoPlaceholder stop={stop} blur={blurPx} sharpness={sharpness}/>
-            <div style={{
-              position:'absolute', inset:0,
-              background:'radial-gradient(ellipse at center, transparent 40%, rgba(232,180,184,0.15) 100%)',
-              mixBlendMode:'soft-light', pointerEvents:'none',
-            }}/>
+      {/* polaroid blur photo(s) — collage when stop has multiple photos */}
+      {stop.photos && stop.photos.length >= 2 ? (
+        <div style={{position:'relative', margin:'22px auto 8px', width: 300, height: 400}}>
+          {/* Back photo — tilted left, pinned top-left */}
+          <div style={{
+            position:'absolute', top: 4, left: 4,
+            width: 165, zIndex: 1, transform: 'rotate(-5deg)',
+          }}>
+            <div className="polaroid">
+              <div className="tape tape-top-left" />
+              <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+                <PhotoPlaceholder stop={{...stop, photo: stop.photos[0], photos: null}} blur={blurPx} sharpness={sharpness}/>
+                <div style={{
+                  position:'absolute', inset:0,
+                  background:'radial-gradient(ellipse at center, transparent 40%, rgba(232,180,184,0.15) 100%)',
+                  mixBlendMode:'soft-light', pointerEvents:'none',
+                }}/>
+              </div>
+            </div>
+            <Flower size={18} style={{position:'absolute', top:-12, right:-10, transform:'rotate(10deg)'}}/>
           </div>
-          <div className="caption">
-            {wrongCount < 2 ? '¿adivinas dónde, amor?' :
-             wrongCount < 4 ? 'un lugar muy nuestro…' :
-             'casi casi, princesa'}
+          {/* Front photo — tilted right, pinned bottom-right */}
+          <div style={{
+            position:'absolute', bottom: 4, right: 4,
+            width: 165, zIndex: 2, transform: 'rotate(6deg)',
+          }}>
+            <div className="polaroid">
+              <div className="tape tape-top-right" />
+              <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+                <PhotoPlaceholder stop={{...stop, photo: stop.photos[1], photos: null}} blur={blurPx} sharpness={sharpness}/>
+                <div style={{
+                  position:'absolute', inset:0,
+                  background:'radial-gradient(ellipse at center, transparent 40%, rgba(232,180,184,0.15) 100%)',
+                  mixBlendMode:'soft-light', pointerEvents:'none',
+                }}/>
+              </div>
+            </div>
+            <Flower size={18} color="#C8A2C8" style={{position:'absolute', top:-10, left:-12, transform:'rotate(-14deg)'}}/>
+          </div>
+          {/* Counter stamp */}
+          <div style={{
+            position:'absolute', top: -8, right: -8,
+            background:'#fffdf9', padding:'4px 10px', borderRadius:2,
+            border:'1px solid var(--rose-ink)', transform:'rotate(6deg)',
+            fontFamily:'"DM Mono", monospace', fontSize:9,
+            letterSpacing:'0.15em', color:'var(--rose-ink)', zIndex: 3,
+          }}>
+            {revealedSlotCount}/{totalGuessableSlots} letras · {wrongCount} fallo{wrongCount===1?'':'s'}
           </div>
         </div>
+      ) : (
         <div style={{
-          position:'absolute', top: -8, right: -14,
-          background:'#fffdf9', padding:'4px 10px', borderRadius:2,
-          border:'1px solid var(--rose-ink)', transform:'rotate(6deg)',
-          fontFamily:'"DM Mono", monospace', fontSize:9,
-          letterSpacing:'0.15em', color:'var(--rose-ink)',
+          position:'relative', margin:'22px auto 0', width: 240,
+          transform: 'rotate(-1.5deg)',
         }}>
-          {revealedSlotCount}/{totalGuessableSlots} letras · {wrongCount} fallo{wrongCount===1?'':'s'}
+          <div className="polaroid">
+            <div className="tape tape-top-left" />
+            <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+              <PhotoPlaceholder stop={stop} blur={blurPx} sharpness={sharpness}/>
+              <div style={{
+                position:'absolute', inset:0,
+                background:'radial-gradient(ellipse at center, transparent 40%, rgba(232,180,184,0.15) 100%)',
+                mixBlendMode:'soft-light', pointerEvents:'none',
+              }}/>
+            </div>
+            <div className="caption">
+              {wrongCount < 2 ? '¿adivinas dónde, amor?' :
+               wrongCount < 4 ? 'un lugar muy nuestro…' :
+               'casi casi, princesa'}
+            </div>
+          </div>
+          <Flower size={20} style={{position:'absolute', top:-14, left:-8, transform:'rotate(-15deg)'}}/>
+          <div style={{
+            position:'absolute', top: -8, right: -14,
+            background:'#fffdf9', padding:'4px 10px', borderRadius:2,
+            border:'1px solid var(--rose-ink)', transform:'rotate(6deg)',
+            fontFamily:'"DM Mono", monospace', fontSize:9,
+            letterSpacing:'0.15em', color:'var(--rose-ink)',
+          }}>
+            {revealedSlotCount}/{totalGuessableSlots} letras · {wrongCount} fallo{wrongCount===1?'':'s'}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* clue */}
       <div key={clueLevel} className="soft-in" style={{
@@ -487,18 +539,57 @@ function StopReveal({ stop, phase, isFinal, onDepart, onArrive, onOpenLetter, on
         </div>
       </div>
 
-      {/* unblurred polaroid */}
-      <div style={{position:'relative', margin:'20px auto 0', width: 240, transform:'rotate(1deg)'}}>
-        <div className="polaroid">
-          <div className="tape tape-top-left" />
-          <div className="tape tape-top-right" />
-          <div className="memory-photo" style={{aspectRatio:'4/5'}}>
-            <PhotoPlaceholder stop={stop} blur={0} sharpness={1}/>
+      {/* unblurred polaroid(s) — collage when stop has multiple photos */}
+      {stop.photos && stop.photos.length >= 2 ? (
+        <div style={{position:'relative', margin:'20px auto 32px', width: 300, height: 400}}>
+          {/* Back photo — tilted left */}
+          <div style={{
+            position:'absolute', top: 4, left: 4,
+            width: 165, zIndex: 1, transform: 'rotate(-5deg)',
+          }}>
+            <div className="polaroid">
+              <div className="tape tape-top-left" />
+              <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+                <PhotoPlaceholder stop={{...stop, photo: stop.photos[0], photos: null}} blur={0} sharpness={1}/>
+              </div>
+            </div>
+            <Flower size={20} style={{position:'absolute', top:-12, right:-10, transform:'rotate(10deg)'}}/>
           </div>
-          <div className="caption">{stop.theme.toLowerCase()}</div>
+          {/* Front photo — tilted right */}
+          <div style={{
+            position:'absolute', bottom: 4, right: 4,
+            width: 165, zIndex: 2, transform: 'rotate(6deg)',
+          }}>
+            <div className="polaroid">
+              <div className="tape tape-top-right" />
+              <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+                <PhotoPlaceholder stop={{...stop, photo: stop.photos[1], photos: null}} blur={0} sharpness={1}/>
+              </div>
+            </div>
+            <Flower size={20} color="#C8A2C8" style={{position:'absolute', top:-10, left:-12, transform:'rotate(-14deg)'}}/>
+          </div>
+          {/* Theme script caption below the composite */}
+          <div style={{
+            position:'absolute', bottom:-28, left:0, right:0,
+            textAlign:'center', fontFamily:'"Italianno", "Parisienne", cursive',
+            fontSize: 26, color:'var(--rose-ink)', zIndex: 3, lineHeight: 1,
+          }}>
+            {stop.theme.toLowerCase()}
+          </div>
         </div>
-        <Flower size={22} style={{position:'absolute', top:-12, right:-8}}/>
-      </div>
+      ) : (
+        <div style={{position:'relative', margin:'20px auto 0', width: 240, transform:'rotate(1deg)'}}>
+          <div className="polaroid">
+            <div className="tape tape-top-left" />
+            <div className="tape tape-top-right" />
+            <div className="memory-photo" style={{aspectRatio:'4/5'}}>
+              <PhotoPlaceholder stop={stop} blur={0} sharpness={1}/>
+            </div>
+            <div className="caption">{stop.theme.toLowerCase()}</div>
+          </div>
+          <Flower size={22} style={{position:'absolute', top:-12, right:-8}}/>
+        </div>
+      )}
 
       {!showLetter && (
         <div className="soft-in" style={{textAlign:'center', marginTop: 28}}>
