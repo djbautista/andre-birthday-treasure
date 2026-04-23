@@ -83,7 +83,7 @@ const PhotoPlaceholder = ({ stop, blur = 0, sharpness = 0 }) => {
         </>
       )
     },
-    2: { // Restaurante y videojuegos — neon, arcade
+    3: { // Restaurante y videojuegos — neon, arcade
       bg: `radial-gradient(ellipse at 50% 40%, #3a1f3a 0%, #1a0f2a 100%)`,
       elements: (
         <>
@@ -100,7 +100,7 @@ const PhotoPlaceholder = ({ stop, blur = 0, sharpness = 0 }) => {
         </>
       )
     },
-    3: { // Zajari — cozy apartment view, park shadows
+    2: { // Zajari — cozy apartment view, park shadows
       bg: `linear-gradient(180deg, #1a2030 0%, #2a3045 30%, #4a3a45 70%, #2a2530 100%)`,
       elements: (
         <>
