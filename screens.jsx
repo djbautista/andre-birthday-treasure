@@ -404,7 +404,7 @@ function StopScreen({ stop, stopIndex, onComplete }) {
           textAlign:'center', marginTop: 12,
           color:'var(--rose-ink)', fontStyle:'italic',
           fontSize: 15, fontFamily: '"Cormorant Garamond", serif',
-          minHeight: '1.4em',
+          minHeight: '3em',
           visibility: showError ? 'visible' : 'hidden',
         }}
       >
