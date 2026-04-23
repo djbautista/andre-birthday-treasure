@@ -395,18 +395,23 @@ function StopScreen({ stop, stopIndex, onComplete }) {
         </div>
       </div>
 
-      {/* error feedback */}
-      {showError && (
-        <div className="soft-in" style={{
+      {/* error feedback — space always reserved so the keyboard doesn't jump */}
+      <div
+        key={showError ? `err-${showError}-${lastWrong}` : 'err-empty'}
+        className={showError ? 'soft-in' : undefined}
+        aria-hidden={!showError}
+        style={{
           textAlign:'center', marginTop: 12,
           color:'var(--rose-ink)', fontStyle:'italic',
           fontSize: 15, fontFamily: '"Cormorant Garamond", serif',
-        }}>
-          <Heart size={11} color="#D4919A" style={{verticalAlign:'middle', marginRight:6}}/>
-          {showError}
-          {lastWrong && <span style={{marginLeft:6, fontFamily:'"DM Mono", monospace', fontSize:11, opacity:0.7}}>(la «{lastWrong}» no está)</span>}
-        </div>
-      )}
+          minHeight: '1.4em',
+          visibility: showError ? 'visible' : 'hidden',
+        }}
+      >
+        <Heart size={11} color="#D4919A" style={{verticalAlign:'middle', marginRight:6}}/>
+        {showError || ' '}
+        {showError && lastWrong && <span style={{marginLeft:6, fontFamily:'"DM Mono", monospace', fontSize:11, opacity:0.7}}>(la «{lastWrong}» no está)</span>}
+      </div>
 
       {/* help button after 3 wrong */}
       {wrongCount >= 3 && (
